@@ -15,11 +15,12 @@ public class MenuHandler {
 	public MenuHandler() {
 		l = new LinkedList<>();
 		d = new LinkedList<>();
-		createDepartments();
+		chooseDepartments();
 	}
 
 	public void handle() {
 		int choice;
+		
 		do {
 			System.out.println("1.Add Employee\n" + "2.Show All Employees \n" + "3.Delete Employee\n"
 					+ "4.Calculate Salary\n" + "Other than above to exit\n");
@@ -39,7 +40,7 @@ public class MenuHandler {
 				if (l.size() != 0) {
 					System.out.println("Enter the employee ID from following to delete employee: ");
 					showEmployees();
-					long id = Long.parseLong(s.nextLine());
+					 long id = Long.parseLong(s.nextLine());
 					deleteEmployee(id);
 				} else {
 					System.out.println("No Employee added please add first");
@@ -49,7 +50,7 @@ public class MenuHandler {
 				if (l.size() != 0) {
 					System.out.println("Enter the employee ID from following: ");
 					showEmployees();
-					id = Long.parseLong(s.nextLine());
+				   long id = Long.parseLong(s.nextLine());
 					Employee employee = l.stream().filter(t -> t.getEmployeeId() == id).findFirst().get();
 					calculateSalary(employee);
 				} else {
@@ -60,7 +61,7 @@ public class MenuHandler {
 		} while (choice < 5 && choice > 0);
 	}
 
-	private void createDepartments() {
+	private void chooseDepartments() {
 		d.add(new Department(101, "IT"));
 		d.add(new Department(102, "Electronics"));
 		d.add(new Department(103, "Account"));
