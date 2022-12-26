@@ -15,7 +15,7 @@ public class MenuHandler {
 	public MenuHandler() {
 		l = new LinkedList<>();
 		d = new LinkedList<>();
-		chooseDepartments();
+		createDepartments();
 	}
 
 	public void handle() {
@@ -61,7 +61,7 @@ public class MenuHandler {
 		} while (choice < 5 && choice > 0);
 	}
 
-	private void chooseDepartments() {
+	private void createDepartments() {
 		d.add(new Department(101, "IT"));
 		d.add(new Department(102, "Electronics"));
 		d.add(new Department(103, "Account"));
