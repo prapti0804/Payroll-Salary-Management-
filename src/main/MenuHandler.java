@@ -2,6 +2,7 @@ package main;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 import model.Department;
@@ -20,7 +21,6 @@ public class MenuHandler {
 
 	public void handle() {
 		int choice;
-		
 		do {
 			System.out.println("1.Add Employee\n" + "2.Show All Employees \n" + "3.Delete Employee\n"
 					+ "4.Calculate Salary\n" + "Other than above to exit\n");
@@ -38,10 +38,7 @@ public class MenuHandler {
 				break;
 			case 3:
 				if (l.size() != 0) {
-					System.out.println("Enter the employee ID from following to delete employee: ");
-					showEmployees();
-					 long id = Long.parseLong(s.nextLine());
-					deleteEmployee(id);
+					deleteEmployee();
 				} else {
 					System.out.println("No Employee added please add first");
 				}
@@ -50,15 +47,26 @@ public class MenuHandler {
 				if (l.size() != 0) {
 					System.out.println("Enter the employee ID from following: ");
 					showEmployees();
-				   long id = Long.parseLong(s.nextLine());
-					Employee employee = l.stream().filter(t -> t.getEmployeeId() == id).findFirst().get();
-					calculateSalary(employee);
+					long id = Long.parseLong(s.nextLine());
+					Optional<Employee> employee;
+					do {
+						employee = l.stream().filter(t -> t.getEmployeeId() == id).findFirst();
+						if (!employee.isPresent()) {
+							System.err.println("Please enter the valid department ID");
+						}
+						else {
+							break;
+						}
+					} while (true);
+					calculateSalary(employee.get());
 				} else {
 					System.out.println("No Employee added please add first");
 				}
 				break;
+			default:
+				System.err.println("You have entered wrong choice");
 			}
-		} while (choice < 5 && choice > 0);
+		} while (true);
 	}
 
 	private void createDepartments() {
@@ -68,8 +76,8 @@ public class MenuHandler {
 		d.add(new Department(104, "HR"));
 	}
 
-	private int showDepartments() {
-		int choice;
+	private long showDepartments() {
+		long choice;
 		System.out.println("______________________________");
 		System.out.printf("%4s %20s\n", "ID", "Name");
 		System.out.println("==============================");
@@ -77,7 +85,17 @@ public class MenuHandler {
 			System.out.printf("%4d %20s\n", t.getDepartmentId(), t.getDepartmentName());
 		});
 		System.out.println("_______________________________");
-		choice = Integer.parseInt(s.nextLine());
+		while (true) {
+			long id = Integer.parseInt(s.nextLine());
+			Optional<Department> findFirst = d.stream().filter(t -> t.getDepartmentId()==id).findFirst();
+			if(id<=0 || !findFirst.isPresent() ) {
+				System.err.println("Invalid ID \n Please select valid department id from above");
+			}
+			else {
+				choice =id;
+				break;
+			}
+		}
 		return choice;
 	}
 
@@ -97,7 +115,19 @@ public class MenuHandler {
 		l.add(e);
 		System.out.println("Employee Added");
 	}
+	private boolean containsDigit(String s) {
+	    boolean containsDigit = false;
 
+	    if (s != null && !s.isEmpty()) {
+	        for (char c : s.toCharArray()) {
+	            if (containsDigit = Character.isDigit(c)) {
+	                break;
+	            }
+	        }
+	    }
+
+	    return containsDigit;
+	}
 	private void showEmployees() {
 		System.out.println(
 				"__________________________________________________________________________________________________________");
@@ -148,9 +178,16 @@ public class MenuHandler {
 		System.out.printf("%-20s =%30s\n", "Gross salary", e.getGrossSalary());
 	}
 
-	private void deleteEmployee(long id) {
-		Employee employee = l.stream().filter(t -> t.getEmployeeId() == id).findFirst().get();
-		l.remove(employee);
-		System.out.println("Employee Deleted Successfully");
+	private void deleteEmployee() {
+		System.out.println("Enter the employee ID from following to delete employee: ");
+		showEmployees();
+		long id = Long.parseLong(s.nextLine());
+		Optional<Employee> employee = l.stream().filter(t -> t.getEmployeeId() == id).findFirst();
+		if (!employee.isPresent()) {
+			System.err.println("Invalid Employee ID \n Employee deletion failed");
+		} else {
+			l.remove(employee.get());
+			System.out.println("Employee Deleted Successfully");
+		}
 	}
 }
